@@ -9,21 +9,15 @@ namespace DmyrychMessenger
 {
     //клас реалізує практичну реалізацію шифрування алгоритмом RSA
     //в ньому генеруються пари відкритий-закритий(публічний-приватний) ключів
-    //відкритий передається на сервер і може бути використаний будь-яким користувачем для ЗАшифрування повідомлення
+    //відкритий передається на сервер і може бути використаний будь-яким користувачем для зашифрування повідомлення
+    //в моїй реалізації, асиметричне шифрування використовуватиметься для обміну симетричним ключем сесії між користувачами
+    //для безпосередньо шифрування повідомлень буде використано 
     //розшифрування повідомлення можливе лише за допомогою закритого ключа, відповідного відкритому
     //за допомогою якого було зашифроване повідомлення
-    class RSAEncryption
+    static class RSAEncryption
     {
         private static UnicodeEncoding _encoder = new UnicodeEncoding();
 
-        RSAEncryption()
-        {
-
-        }
-        public RSACryptoServiceProvider GenerateKeys()
-        {
-
-        }
         //Метод для зашифровування повідомлення відкритим(публічним) ключем
         public static string Encrypt(string originalMessage, string publicKey)
         {
@@ -52,6 +46,15 @@ namespace DmyrychMessenger
                 return _encoder.GetString(decryptedBytes);
             }
         }
-        public static
+        
+        public static void SaveKeyPairToFile(string publicKey, string privateKey, string filePath)
+        {
+            using (StreamWriter writer = new StreamWriter(filePath))
+            {
+                writer.WriteLine(publicKey);
+                writer.WriteLine(privateKey);
+            }
+        }
+       
     }
 }
