@@ -46,15 +46,16 @@ namespace DmyrychMessenger
                 return _encoder.GetString(decryptedBytes);
             }
         }
-        
-        public static void SaveKeyPairToFile(string publicKey, string privateKey, string filePath)
-        {
-            using (StreamWriter writer = new StreamWriter(filePath))
-            {
-                writer.WriteLine(publicKey);
-                writer.WriteLine(privateKey);
-            }
-        }
-       
+
+        //public static void SaveKeyPairToFile(string publicKey, string privateKey, string filePath)
+        //{
+        //    using (StreamWriter writer = new StreamWriter(filePath))
+        //    {
+        //        writer.WriteLine(publicKey);
+        //        writer.WriteLine(privateKey);
+        //    }
+        //}
+
+
     }
 }
