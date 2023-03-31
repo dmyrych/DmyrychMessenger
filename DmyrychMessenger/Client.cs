@@ -50,6 +50,26 @@ namespace DmyrychMessenger
                 Console.WriteLine($"Exception: {e}");
             }
         }
+        public void Register(string login, string password)
+        {
+            try
+            {
+                //відправляємо повідомлення на сервер
+                string message = $"register: {login} {password}";
+                byte[] data = Encoding.Unicode.GetBytes(message);
+                clientSocket.Send(data);
+
+                //отримуємо відповідь від сервера
+                byte[] buffer = new byte[1024];
+                int bytesRead = clientSocket.Receive(buffer);
+                string response = Encoding.Unicode.GetString(buffer, 0, bytesRead);
+                Console.WriteLine(response);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Exception: {e}");
+            }
+        }
 
         //Client client = new Client();
         //client.Connect("127.0.0.1", 8888);
