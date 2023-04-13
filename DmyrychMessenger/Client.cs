@@ -16,13 +16,13 @@ namespace DmyrychMessenger
             {
                 try
                 {
-                    //Creating socket
+                    //Створюємо сокет
                     clientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
-                    //connecting to server using created socket
+                    //коннектимосчя до сервера використовуючи створений сокет
                     clientSocket.Connect(ipAddress, port);
 
-                    // Generate RSA Key Pair and exchange public key with the companion
+                    // Генеруємо пару ключів RSA та відправляємо публічний ключ співрозмовнику
                     AsymmetricPair rsaKeys = KeyGenerator.GenerateRSAKeys();
                     string publicKey = rsaKeys.publicKey;
                     SendPublicKey(publicKey);
@@ -46,7 +46,7 @@ namespace DmyrychMessenger
         {
             try
             {
-                // Encrypt the message using the session key and send it to companion
+                // Зашифровуємо повідомлення використовуючи ключ сесії та надсилаємо його співрозмовнику
                 var encryptedMessage = AESEncryption.EncryptMessage(message, sessionKey);
                 byte[] data = Encoding.Unicode.GetBytes(encryptedMessage);
                 clientSocket.Send(data);
@@ -56,7 +56,7 @@ namespace DmyrychMessenger
                 Console.WriteLine($"Exception: {e}");
             }
         }
-        // Sending session key
+        // Метод для надсилання ключа сесії в асиметрично зашифрованому вигляді
         public void SendSessionKey(string cryptedSessionKey)
         {
             try
@@ -69,7 +69,7 @@ namespace DmyrychMessenger
                 Console.WriteLine($"Exception: {e}");
             }
         }
-        //recieving Session Key
+        //Отримання ключа сесії
         public string ReceiveSessionKey()
         {
             try
@@ -86,7 +86,7 @@ namespace DmyrychMessenger
                 return null;
             }
         }
-        //use this method to send public key
+        //метод длля надсиланя публічного ключа
         public void SendPublicKey(string publicKey)
         {
             try
@@ -100,7 +100,7 @@ namespace DmyrychMessenger
             }
         }
 
-        //use this method to recieve public key
+        //метод для прийому публічного ключа
         public string ReceivePublicKey()
         {
             try
@@ -121,7 +121,7 @@ namespace DmyrychMessenger
         {
             try
             {
-                // Receive the message from the server and decrypt it using the session key
+                // Отримання повідомлення та його розшифрування ключем сесії
                 var buffer = new byte[4096];
                 var bytesRead = clientSocket.Receive(buffer);
                 var encryptedMessage = Encoding.Unicode.GetString(buffer, 0, bytesRead);
@@ -160,26 +160,26 @@ namespace DmyrychMessenger
         {
             try
             {
-                //Creating socket
+                //Cтворюємо сокет
                 clientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
-                //Binding socket to the specified port
+                //Прикріплюємо сокет то виділеного порту
                 clientSocket.Bind(new System.Net.IPEndPoint(System.Net.IPAddress.Any, port));
 
-                //Listening to incoming connections
+                //Прослуховування вхідних з'єднань
                 clientSocket.Listen(10);
 
                 Console.WriteLine($"Waiting for connection on port {port}...");
 
-                //Accepting the incoming connection
+                //Прийом вхідного з'єднання
                 clientSocket = clientSocket.Accept();
 
-                // Wait for public key of the companion
+                // Очікуємо публічний ключ
                 var buffer = new byte[2048];
                 var bytesRead = clientSocket.Receive(buffer);
                 var companionKey = Encoding.Unicode.GetString(buffer, 0, bytesRead);
 
-                // Decrypt the client public key and generate the session key
+                // Генерація ключа сесії
                 sessionKey = KeyGenerator.GenerateSessionKey();
                 var encryptedSessionKey = RSAEncryption.Encrypt(sessionKey, companionKey);
                 SendSessionKey(encryptedSessionKey);
@@ -187,6 +187,38 @@ namespace DmyrychMessenger
             catch (Exception e)
             {
                 Console.WriteLine($"Exception: {e}");
+            }
+        }
+        public async Task SendAsync(string message)
+        {
+            try
+            {
+                // Зашифрувати повідомлення використовуючи ключ сесії та надіслати його співрозмовнику
+                var encryptedMessage = AESEncryption.EncryptMessage(message, sessionKey);
+                byte[] data = Encoding.Unicode.GetBytes(encryptedMessage);
+                await clientSocket.SendAsync(new ArraySegment<byte>(data), SocketFlags.None);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Exception: {e}");
+            }
+        }
+
+        public async Task<string> ReceiveAsync()
+        {
+            try
+            {
+                // Отримання повідомлення та розшифрувати його використовуючи ключ сесії
+                var buffer = new byte[4096];
+                var result = await clientSocket.ReceiveAsync(new ArraySegment<byte>(buffer), SocketFlags.None);
+                var encryptedMessage = Encoding.Unicode.GetString(buffer, 0, result);
+                var message = AESEncryption.DecryptMessage(encryptedMessage, sessionKey);
+                return message;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Exception: {e}");
+                return null;
             }
         }
     }

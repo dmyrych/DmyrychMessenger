@@ -15,6 +15,7 @@ namespace DmyrychMessenger
         public string publicKey;
         public string privateKey;
 
+        //AsymmetricPair використано мною для спрощення роботи з парою публічний-приватний ключ.
         public AsymmetricPair(string open, string closed)
         {
             publicKey = open;
