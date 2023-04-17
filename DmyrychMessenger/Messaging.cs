@@ -26,7 +26,7 @@ namespace DmyrychMessenger
 
                     Console.WriteLine("Connected!");
 
-                    Recieve(client);
+                    Receive(client);
 
                     Send(client);
 
@@ -42,7 +42,7 @@ namespace DmyrychMessenger
 
                     Console.WriteLine($"Connected to {ipAddress}:{port}");
 
-                    Recieve(client);
+                    Receive(client);
 
                     Send(client);
 
@@ -56,7 +56,7 @@ namespace DmyrychMessenger
                 choice = Console.ReadLine();
             }
         }
-        public void Recieve(Client client)
+        public void Receive(Client client)
         {
             var receiveTask = Task.Run(async () =>
             {
