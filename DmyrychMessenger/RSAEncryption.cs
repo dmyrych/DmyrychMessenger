@@ -25,7 +25,7 @@ namespace DmyrychMessenger
 
             using (RSACryptoServiceProvider rsa = new RSACryptoServiceProvider())
             {
-                rsa.KeySize = 2048;//2048 біт - оптимальна довжина ключа
+                rsa.KeySize = Container.getRSAKeyLength();
                 rsa.FromXmlString(publicKey);
 
                 byte[] encryptedBytes = rsa.Encrypt(bytesToEncrypt, false);
@@ -40,7 +40,7 @@ namespace DmyrychMessenger
 
             using (RSACryptoServiceProvider rsa = new RSACryptoServiceProvider())
             {
-                rsa.KeySize = 2048;
+                rsa.KeySize = Container.getRSAKeyLength();
                 rsa.FromXmlString(privateKey);
 
                 byte[] decryptedBytes = rsa.Decrypt(bytesToDecrypt, false);

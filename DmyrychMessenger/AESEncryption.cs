@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DmyrychMessenger;
+using System;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
@@ -10,7 +11,7 @@ public static class AESEncryption
     {
         using (Aes aes = Aes.Create())
         {
-            aes.BlockSize = 128;
+            aes.BlockSize = Container.getAESBlockSize();
             aes.Mode = CipherMode.ECB;
             aes.Padding = PaddingMode.PKCS7;
             aes.Key = Encoding.Unicode.GetBytes(key);
@@ -36,7 +37,7 @@ public static class AESEncryption
         byte[] encryptedData = Convert.FromBase64String(encryptedMessage);
         using (Aes aes = Aes.Create())
         {
-            aes.BlockSize = 128;
+            aes.BlockSize = Container.getAESBlockSize();
             aes.Mode = CipherMode.ECB;
             aes.Padding = PaddingMode.PKCS7;
             aes.Key = Encoding.Unicode.GetBytes(key);

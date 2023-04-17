@@ -29,7 +29,7 @@ namespace DmyrychMessenger
         public static AsymmetricPair GenerateRSAKeys()
         {
             RSACryptoServiceProvider rsa = new RSACryptoServiceProvider();
-            rsa.KeySize = 2048;
+            rsa.KeySize = Container.getRSAKeyLength();
             string publicKey = rsa.ToXmlString(false);
             string privateKey = rsa.ToXmlString(true);
             AsymmetricPair pair = new AsymmetricPair(publicKey, privateKey);
@@ -40,10 +40,10 @@ namespace DmyrychMessenger
         {
             using (Aes aes = Aes.Create())
             {
-                aes.BlockSize = 128;
+                aes.BlockSize = Container.getAESBlockSize();
                 aes.Mode = CipherMode.ECB;
                 aes.Padding = PaddingMode.Zeros;
-                aes.KeySize = 256;
+                aes.KeySize = Container.getAESKeySize();
                 aes.GenerateKey();
                 string strKey = Encoding.Unicode.GetString(aes.Key);
                 return strKey;
