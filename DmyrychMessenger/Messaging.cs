@@ -11,6 +11,9 @@ namespace DmyrychMessenger
     {
         async public Task Run()
         {
+            Console.BackgroundColor = ConsoleColor.White;
+            Console.Clear();
+            Console.ForegroundColor = ConsoleColor.Black;
             int port = Container.getPort();
             Client client = new Client();
             Console.WriteLine("Enter '1' to start a new conversation or '2' to join an existing one:");
